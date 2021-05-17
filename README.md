@@ -19,9 +19,11 @@ Now it allows adding the found word to [Anki](https://apps.ankiweb.net/) *deskto
 
 ## Usage
 
-Just click on target language translation word.
-The source will be saved as "Front", the translation as "Back" card's fields.
-After that, the target word becomes green (or red in case of duplication or another error).
+Highlight a word or sentence you wish to be translated. The google translate icon should appear near the end. 
+Click to translate the selected region. 
+Just click on "Anki" button to send current transaltion to Anki.
+The source will be saved as "Selected Text", the translation as "Translation" card's fields (configurable in the the options menu)
+You can highlight a word in the selected transaltion for it be saved seperatly.
 
 ![bubble-screenshot](https://raw.github.com/razum2um/google-translate-anki/master/bubble.png)
 
