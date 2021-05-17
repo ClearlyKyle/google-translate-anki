@@ -4218,7 +4218,7 @@
           b += "auto" != f ? '<option value="' + gg(f[0]) + '"' + (f[0] == a.ec ? " selected" : "") + ">" + gg(f[1]) + "</option>" : ""
         }
         /* ANKI BUTTON */
-        b += '</select><button class="btnAnki">ANKI</button></div><div class="gtx-source-audio"><div class="jfk-button-img"></div></div><div class="gtx-body">' + 
+        b += '</select><button class="btnAnki" style="margin-left:10px">ANKI</button></div><div class="gtx-source-audio"><div class="jfk-button-img"></div></div><div class="gtx-body">' + 
                   gg(a.query) + '</div><br><div class="gtx-language">' + 
                   gg(a.hc) + '</div><div class="gtx-target-audio"><div class="jfk-button-img"></div></div><div class="gtx-body gtx-target" data-source="' + gg(a.query) + '">' +
                   gg(a.Ob) + "</div>";
