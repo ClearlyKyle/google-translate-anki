@@ -1,55 +1,82 @@
 /* Copyright 2014 Google */
 (function() {
-  var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-  var fetchOptions = function(url, action, selectId) {
-    var selectEl = document.getElementById(selectId);
-    return new Promise((resolve, reject) => {
-      chrome.storage.local.get(selectId, (stored) => {
-        var storedVal = stored[selectId] || 'Basic';
-        fetch(url, { method: "POST", body: JSON.stringify({"action": action}) }).then(r => r.json()).then(data => {
-          for (var i = 0; i < data.length; i++) {
-            var name = data[i];
-            e = document.createElement("option");
-            e.value = name;
-            e.text = name;
-            if (name === storedVal) e.selected = true;
-            selectEl.appendChild(e);
-          }
-        }).then(r => resolve(r)).catch(e => reject(e));
-      });
-    });
-  }
-  var saveOption = function(selectId) {
-    var selectEl = document.getElementById(selectId);
-    return chrome.storage.local.set({[selectId]: selectEl.value})
-  }
-  document.addEventListener("DOMContentLoaded", function() {
-    var urlEl = document.getElementById('ankiConnectUrl');
-    var saveAnkiBtn = document.getElementById('saveAnkiBtn');
-    
-    chrome.storage.local.get('ankiConnectUrl', ({ankiConnectUrl}) => {
-      var url = ankiConnectUrl || 'http://localhost:8765';
-      urlEl.classList.add('focused');
-      urlEl.value = url;
-      Promise.all([
-        fetchOptions(url, 'deckNames', 'ankiDeckNameSel'),
-        fetchOptions(url, 'modelNames', 'ankiModelNameSel')
-      ])
-        .then(() => {
-          saveAnkiBtn.classList.remove('jfk-button-disabled');
-          saveAnkiBtn.addEventListener('click', (e) => {
-            Promise.all([
-              saveOption('ankiDeckNameSel'),
-              saveOption('ankiModelNameSel'),
-              saveOption('ankiConnectUrl')
-            ])
-              .then(() => alert(`Options saved!`))
-              .catch(error => alert(`Cannot save options: ${error}`))
-          });
-        })
-        .catch(error => alert(`Cannot fetch options via AnkiConnect: ${error}`))
-    });
-  });
+	var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+  
+	var fetchOptions = function(selectId, url, action, params = {}) {
+	  var selectEl = document.getElementById(selectId);
+	  return new Promise((resolve, reject) => {
+		chrome.storage.local.get(selectId, (stored) => {
+		  var storedVal = stored[selectId] || 'Basic';
+		  fetch(url, { method: "POST", body: JSON.stringify({"action": action, "params": params}) }).then(r => r.json()).then(data => {
+			for (var i = 0; i < data.length; i++) {
+			  var name = data[i];
+			  e = document.createElement("option");
+			  e.value = name;
+			  e.text = name;
+			  if (name === storedVal) e.selected = true;
+			  selectEl.appendChild(e);
+			}
+		  }).then(r => resolve(r)).catch(e => reject(e));
+		});
+	  });
+	}
+	var saveOption = function(selectId) {
+	  var selectEl = document.getElementById(selectId);
+	  return chrome.storage.local.set({[selectId]: selectEl.value})
+	}
+	document.addEventListener("DOMContentLoaded", function() {
+	  var urlEl = document.getElementById('ankiConnectUrl');
+	  var saveAnkiBtn = document.getElementById('saveAnkiBtn');
+	  var modelName = document.getElementById('ankiModelNameSel');
+	  
+	  chrome.storage.local.get('ankiConnectUrl', ({ankiConnectUrl}) => {
+		var url = ankiConnectUrl || 'http://localhost:8765';
+		urlEl.classList.add('focused');
+		urlEl.value = url;
+  
+		Promise.all([
+		  fetchOptions('ankiDeckNameSel', url, 'deckNames'),
+		  fetchOptions('ankiModelNameSel', url, 'modelNames'),
+  
+		  fetchOptions('ankiFieldSentence', url, 'modelFieldNames', {"modelName": "Basic"}),
+		  fetchOptions('ankiFieldTranslation', url, 'modelFieldNames', {"modelName": "Basic"}),
+		  fetchOptions('ankiFieldWord', url, 'modelFieldNames', {"modelName": "Basic"})
+		])
+		  .then(() => {      
+			
+			modelName.addEventListener("change", function() {
+  
+			  var array = ["ankiFieldSentence","ankiFieldTranslation","ankiFieldWord"];
+  
+			  for (var i = 0; i < array.length; i++) 
+			  {
+				document.getElementById(array[i]).length = 0;
+				fetchOptions(array[i], url, 'modelFieldNames', {"modelName": document.getElementById('ankiModelNameSel').value});
+  
+				var option = document.createElement("option");
+				option.text = "";
+				document.getElementById(array[i]).appendChild(option);
+			  } 
+			});
+  
+			saveAnkiBtn.classList.remove('jfk-button-disabled');
+			saveAnkiBtn.addEventListener('click', (e) => {
+			  Promise.all([
+				saveOption('ankiDeckNameSel'),
+				saveOption('ankiModelNameSel'),
+				saveOption('ankiConnectUrl'),
+  
+				saveOption('ankiFieldSentence'),
+				saveOption('ankiFieldTranslation'),
+				saveOption('ankiFieldWord')
+			  ])
+				.then(() => alert(`Options saved!`))
+				.catch(error => alert(`Cannot save options: ${error}`))
+			});
+		  })
+		  .catch(error => alert(`Cannot fetch options via AnkiConnect: ${error}`))
+	  });
+	});
 
   var g, k = this,
     m = function(a) {
@@ -3657,6 +3684,9 @@
     L(K(document, "model-name-option"), x("MSG_MODEL_NAME_OPTION"));
     L(K(document, "deck-name-option"), x("MSG_DECK_NAME_OPTION"));
     L(K(document, "anki-options-title-heading"), x("MSG_ANKI_OPTIONS_TITLE"));
+    L(K(document, "deck-field-option-sentence"), x("MSG_DECK_SELECTED_TEXT_OPTION")); /* fields */
+    L(K(document, "deck-field-option-translation"), x("MSG_DECK_TRANSLATION_OPTION")); /* fields */
+    L(K(document, "deck-field-option-word"), x("MSG_DECK_WORD_OPTION")); /* fields */
     L(K(document, "saveAnkiBtn"), x("MSG_SAVE_ANKI_OPTIONS"));
   };
   document.addEventListener("DOMContentLoaded", function() {

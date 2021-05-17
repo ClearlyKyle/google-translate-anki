@@ -1003,7 +1003,7 @@
       return chrome.i18n.getMessage(a)
     }("MSG_FOOTER_TRANSLATE"),
     contexts: ["selection"]
-  });
+  }, () => chrome.runtime.lastError);
   chrome.contextMenus.onClicked.addListener(function(a) {
     chrome.tabs.create({
       url: ea(Bb(), a.selectionText)
