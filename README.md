@@ -10,12 +10,9 @@ Now it allows adding the found word to [Anki](https://apps.ankiweb.net/) *deskto
 1) You must install [AnkiConnect](https://ankiweb.net/shared/info/2055492159) plugin to enable HTTP protocol.
 2) The desktop app (afaik) cannot be daemonized, so it should be running while adding (extension doesn't cache anything).
 3) Install unpacked extension
-
-![install-unpacked-img](https://developer.chrome.com/static/images/get_started/load_extension.png)
-
 4) Setup the URL (default is `http://localhost:8765`), deck and model
 
-![options-screenshot](https://raw.github.com/razum2um/google-translate-anki/master/options.png)
+![options-screenshot](https://raw.github.com/clearlykyle/google-translate-anki/master/options.png)
 
 ## Usage
 
@@ -25,7 +22,7 @@ Just click on "Anki" button to send current transaltion to Anki.
 The source will be saved as "Selected Text", the translation as "Translation" card's fields (configurable in the the options menu)
 You can highlight a word in the selected transaltion for it be saved seperatly.
 
-![bubble-screenshot](https://raw.github.com/razum2um/google-translate-anki/master/bubble.png)
+![bubble-screenshot](https://raw.github.com/clearlykyle/google-translate-anki/master/bubble.png)
 
 Note, that adding the card takes ~3sec on my MBP, be patient :)
 
