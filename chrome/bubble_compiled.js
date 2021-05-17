@@ -5597,7 +5597,7 @@
 				if (window.getSelection) {
 					word = window.getSelection().toString();
 
-					
+					from = from.replace(word, "<b>" + word + "</b>");
 				}
 
 				chrome.storage.local.get(['ankiDeckNameSel', 'ankiModelNameSel', 'ankiFieldSentence', 'ankiFieldTranslation', 'ankiFieldWord'],
@@ -5607,7 +5607,7 @@
 						deck = ankiDeckNameSel || 'Default';
 
 						var fields = { [ankiFieldSentence]: from, [ankiFieldTranslation]: to, [ankiFieldWord]: word };
-						console.log(fields)
+
 						var body = {
 							"action": "addNote",
 							"version": 5,
